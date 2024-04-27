@@ -1,5 +1,6 @@
-# Feudal Tactics - Medieval Strategy Game
+# Feudal Tactics - Medieval Strategy Game (JS Implementation)
 
+***Thanks very much to [[https://github.com/Sesu8642]] for this awesome game. I'm attempting to recreate it in JS to allow an efficient or easier online play. This is very much a work in progress. nothing much is gonna happen anytime soon.*** 
 A medieval strategy game with countless unique and challenging levels. You play on an randomly generated island made of hexagons. Your goal is to conquer all of it. To do so, you attack the enemy with your units while trying to protect your own kingdoms. Made with libGDX. The game mechanics are heavily inspired by Sean O'Connor's Slay.
 
 [![F-Droid](https://img.shields.io/f-droid/v/de.sesu8642.feudaltactics?&color=306bc0&logo=f-droid)](https://f-droid.org/en/packages/de.sesu8642.feudaltactics/)
