@@ -13,33 +13,34 @@ export class Game extends Scene {
 
     create() {
         this.camera = this.cameras.main;
-        this.camera.setBackgroundColor(0x00ff00);
-        this.background = this.add.image(512, 384, "background");
-        this.background.setAlpha(0.5);
+        this.camera.setZoom(2);
+        this.camera.centerOn(200, 100);
+        // this.camera.setBackgroundColor(0x00ff00);
+        // this.background = this.add.image(512, 384, "background");
+        // this.background.setAlpha(0.5);
 
-        // const map = this.add.tilemap("map");
-        // const tileset = map.addTilesetImage("tileset", "tiles")!;
+        this.add.text(400, 300, "hey what's up!!");
 
-        // map.createLayer("Calque 1", tileset);
+        const map = this.add.tilemap("map");
+        const tileset = map.addTilesetImage("tileset", "tiles")!;
 
-        // const cursors = this.input.keyboard.createCursorKeys();
-        // const controlConfig = {
-        //     camera: this.cameras.main,
-        //     left: cursors.left,
-        //     right: cursors.right,
-        //     up: cursors.up,
-        //     down: cursors.down,
-        //     acceleration: 0.02,
-        //     drag: 0.0005,
-        //     maxSpeed: 0.7,
-        // };
+        map.createLayer("Calque 1", tileset);
 
-        // this.controls = new Phaser.Cameras.Controls.SmoothedKeyControl(
-        //     controlConfig
-        // );
+        const cursors = this.input.keyboard!.createCursorKeys();
+        const controlConfig = {
+            camera: this.camera,
+            left: cursors.left,
+            right: cursors.right,
+            up: cursors.up,
+            down: cursors.down,
+            acceleration: 0.02,
+            drag: 0.0005,
+            maxSpeed: 0.7,
+        };
 
-        // this.cameras.main.setZoom(2);
-        // this.cameras.main.centerOn(200, 100);
+        this.controls = new Phaser.Cameras.Controls.SmoothedKeyControl(
+            controlConfig
+        );
 
         EventBus.emit("current-scene-ready", this);
     }
@@ -48,8 +49,8 @@ export class Game extends Scene {
         this.scene.start("GameOver");
     }
 
-    // update(_time: unknown, delta: number) {
-    //     this.controls.update(delta);
-    // }
+    update(_time: unknown, delta: number) {
+        this.controls.update(delta);
+    }
 }
 

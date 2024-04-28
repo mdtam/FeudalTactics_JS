@@ -106,6 +106,8 @@ public class GameStateHelper {
 		return result;
 	}
 
+	// TODO: TAM
+
 	/**
 	 * Generates a map on a {@link GameState}.
 	 * 

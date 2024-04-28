@@ -370,6 +370,7 @@ public class MapRenderer {
 		return animations.computeIfAbsent(name, n2 -> new Animation<TextureRegion>(1F, textureAtlas.findRegions(n2)));
 	}
 
+	// TODO: TAM
 	/** Renders the map. */
 	public synchronized void render() {
 		HashMap<Vector2, TextureRegion> frames = new HashMap<>(); // current frame for each map object
