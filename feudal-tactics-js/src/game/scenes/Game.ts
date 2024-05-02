@@ -26,15 +26,15 @@ export class Game extends Scene {
 
         map.createLayer("Calque 1", tileset);
 
-        const cursors = this.input.keyboard!.createCursorKeys();
+        const cursors = this.input.keyboard!.createCursorKeys(); // asserted
         const controlConfig = {
             camera: this.camera,
             left: cursors.left,
             right: cursors.right,
             up: cursors.up,
             down: cursors.down,
-            acceleration: 0.02,
-            drag: 0.0005,
+            acceleration: 0.7,
+            drag: 0.005,
             maxSpeed: 0.7,
         };
 
