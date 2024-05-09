@@ -28,7 +28,7 @@ export class Preloader extends Scene {
 
         this.load.image("logo", "logo.png");
         this.load.image("star", "star.png");
-        this.load.image("tiles", "hex-tiles.png");
+        this.load.image("tiles", "tileset.png");
         this.load.tilemapTiledJSON("map", "hexagonal.json");
     }
 
