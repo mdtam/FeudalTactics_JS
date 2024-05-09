@@ -8,6 +8,7 @@ export class Game extends Scene {
     background: Phaser.GameObjects.Image;
     gameText: Phaser.GameObjects.Text;
     gameMap: GameMap;
+    border = { top: 20000, bottom: 0, left: 20000, right: 0 };
 
     constructor() {
         super("Game");
@@ -51,25 +52,27 @@ export class Game extends Scene {
 
         // const graf = this.add.graphics({ x: 0, y: 0 });
         // map.renderDebugFull(graf);
-
-        const border = { top: 20000, bottom: 0, left: 20000, right: 0 };
         this.gameMap.tileList.forEach((tile, order) => {
-            border.left = Math.min(border.left, tile.pixelX);
-            border.bottom = Math.max(border.bottom, tile.bottom);
-            border.right = Math.max(border.right, tile.right);
-            border.top = Math.min(border.top, tile.pixelY);
+            this.border.left = Math.min(this.border.left, tile.pixelX);
+            this.border.bottom = Math.max(this.border.bottom, tile.bottom);
+            this.border.right = Math.max(this.border.right, tile.right);
+            this.border.top = Math.min(this.border.top, tile.pixelY);
             this.add.text(tile.pixelX, tile.pixelY, order.toString(), {
                 color: "red",
                 fontSize: 22,
             });
         });
-        console.log(border);
+        this.scaleAndCenter();
+        EventBus.emit("current-scene-ready", this);
+    }
+
+    scaleAndCenter() {
         // Calculate map width and height
-        const mapWidth = border.right - border.left;
-        const mapHeight = border.bottom - border.top;
+        const mapWidth = this.border.right - this.border.left;
+        const mapHeight = this.border.bottom - this.border.top;
         // Calculate center of the map
-        const centerX = (border.left + border.right) / 2;
-        const centerY = (border.top + border.bottom) / 2;
+        const centerX = (this.border.left + this.border.right) / 2;
+        const centerY = (this.border.top + this.border.bottom) / 2;
         // Calculate desired camera view width and height with margin
         const margin = 50; // Adjust the margin as needed
         const desiredWidth = mapWidth + 2 * margin;
@@ -82,11 +85,10 @@ export class Game extends Scene {
         this.camera.centerOn(centerX, centerY);
         // Set camera zoom level
         this.camera.setZoom(zoom);
-        EventBus.emit("current-scene-ready", this);
     }
 
     changeScene() {
-        this.scene.start("GameOver");
+        this.scene.start("MainMenu");
     }
 
     update(_time: unknown, delta: number) {
