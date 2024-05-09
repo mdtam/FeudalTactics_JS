@@ -5,8 +5,6 @@ import { GameMap } from "../utils/MapHelper";
 export class Game extends Scene {
     controls: Phaser.Cameras.Controls.SmoothedKeyControl;
     camera: Phaser.Cameras.Scene2D.Camera;
-    background: Phaser.GameObjects.Image;
-    gameText: Phaser.GameObjects.Text;
     gameMap: GameMap;
     border = { top: 20000, bottom: 0, left: 20000, right: 0 };
 
@@ -16,12 +14,12 @@ export class Game extends Scene {
 
     create() {
         this.camera = this.cameras.main;
-
+        this.border = { top: 20000, bottom: 0, left: 20000, right: 0 };
         const map = this.add.tilemap("map");
         const tileset = map.addTilesetImage("tileset", "tiles");
         map.createLayer("island", tileset!);
 
-        this.gameMap = new GameMap(map);
+        this.gameMap = new GameMap(map, 45, 200, 2);
         this.gameMap.GenerateMap();
 
         const cursors = this.input.keyboard!.createCursorKeys();
