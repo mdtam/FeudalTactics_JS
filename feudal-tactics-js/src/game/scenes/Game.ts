@@ -51,8 +51,8 @@ export class Game extends Scene {
             controlConfig
         );
 
-        const graf = this.add.graphics({ x: 0, y: 0 });
-        map.renderDebugFull(graf);
+        // const graf = this.add.graphics({ x: 0, y: 0 });
+        // map.renderDebugFull(graf);
         this.gameMap
             .getNeighborCoords(
                 this.gameMap.offset_to_axial({
@@ -90,6 +90,10 @@ export class Game extends Scene {
         this.controls.zoomSpeed = (this.camera.zoom * 0.008) / 0.19;
         this.controls.maxSpeedX = 1 / this.camera.zoom;
         this.controls.maxSpeedY = 1 / this.camera.zoom;
+        this.controls.accelX = 1.5 / this.camera.zoom;
+        this.controls.accelY = 1.5 / this.camera.zoom;
+        this.controls.dragX = 0.07 / this.camera.zoom;
+        this.controls.dragY = 0.07 / this.camera.zoom;
     }
 }
 
