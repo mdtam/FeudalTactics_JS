@@ -13,7 +13,6 @@ const config: Phaser.Types.Core.GameConfig = {
     height: 600,
     parent: "game-container",
     backgroundColor: "#2d2d2d",
-    // backgroundColor: "#028af8",
     pixelArt: true,
     scene: [Boot, Preloader, MainMenu, MainGame, GameOver],
 };
