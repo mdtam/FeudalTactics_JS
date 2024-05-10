@@ -106,8 +106,6 @@ public class GameStateHelper {
 		return result;
 	}
 
-	// TODO: TAM
-
 	/**
 	 * Generates a map on a {@link GameState}.
 	 * 
@@ -140,19 +138,6 @@ public class GameStateHelper {
 		generateMap(gameState, players, landMass, density, vegetationDensity, random);
 	}
 
-	private static void generateMap(GameState gameState, List<Player> players, float landMass, float density,
-			float vegetationDensity, Random random) {
-		// if not every player has at least one kingdom, try again
-		do {
-			generateTiles(gameState, players, landMass, density, random);
-			createInitialKingdoms(gameState);
-		} while (!doesEveryPlayerHaveKingdom(gameState));
-		createTrees(gameState, vegetationDensity, random);
-		createCapitals(gameState);
-		sortPlayersByIncome(gameState);
-		createMoney(gameState);
-	}
-
 	private static boolean doesEveryPlayerHaveKingdom(GameState gameState) {
 		List<Player> playersWithoutKingdoms = new ArrayList<>(gameState.getPlayers());
 		for (Kingdom kingdom : gameState.getKingdoms()) {
@@ -172,74 +157,6 @@ public class GameStateHelper {
 					.mapToInt(GameStateHelper::getKingdomIncome).sum();
 			return incomeA > incomeB ? 1 : -1;
 		});
-	}
-
-	private static void generateTiles(GameState gameState, List<Player> players, float landMass, float density,
-			Random random) {
-		// distribute the land mass evenly to all players
-		Map<Player, Integer> tileAmountsToGenerate = new HashMap<>();
-		// if there are tiles left, distribute them to random players
-		Collections.shuffle(players, random);
-		int remainingLandMass = (int) (landMass % players.size());
-		for (Player player : players) {
-			int additionalTiles = 0;
-			if (remainingLandMass > 0) {
-				additionalTiles = 1;
-				remainingLandMass--;
-			}
-			tileAmountsToGenerate.put(player, (int) (landMass / players.size() + additionalTiles));
-		}
-		// keep track of the players that still have tiles left to generate in a list
-		// (because a random one can be selected)
-		ArrayList<Player> remainingPlayers = new ArrayList<>(players);
-		gameState.getMap().clear();
-		// could be done recursively but stack size is uncertain
-		Vector2 nextTilePos = new Vector2(0, 0);
-		ArrayList<Vector2> positionHistory = new ArrayList<>(); // for backtracking
-		while (!remainingPlayers.isEmpty()) {
-			Vector2 currentTilePos = nextTilePos;
-			// place tile
-			Player player = remainingPlayers.get(random.nextInt(remainingPlayers.size()));
-			HexTile tile = new HexTile(player, currentTilePos);
-			gameState.getMap().put(currentTilePos, tile);
-			// remove player if no tiles are left
-			if (tileAmountsToGenerate.get(player) == 1) {
-				remainingPlayers.remove(player);
-			} else {
-				tileAmountsToGenerate.put(player, tileAmountsToGenerate.get(player) - 1);
-			}
-			// add to history
-			positionHistory.add(currentTilePos);
-			// get next tile position with empty neighboring tiles
-			List<Vector2> usableCoords = HexMapHelper.getUnusedNeighborCoords(gameState.getMap(), currentTilePos);
-			while (usableCoords.isEmpty()) {
-				// backtrack until able to place a tile again
-				positionHistory.remove(positionHistory.size() - 1);
-				currentTilePos = positionHistory.get(positionHistory.size() - 1);
-				usableCoords = new ArrayList<>(
-						HexMapHelper.getUnusedNeighborCoords(gameState.getMap(), currentTilePos));
-			}
-			// calculate a score for each neighboring tile for choosing the next one
-			ArrayList<Float> scores = new ArrayList<>();
-			float scoreSum = 0;
-			for (Vector2 candidate : usableCoords) {
-				// factor in density
-				int usableCoordsCountFromCandidate = HexMapHelper.getUnusedNeighborCoords(gameState.getMap(), candidate)
-						.size();
-				float score = (float) Math.pow(usableCoordsCountFromCandidate, density);
-				scores.add(score);
-				scoreSum += score;
-			}
-			// select tile based on score and random
-			float randomScore = random.nextFloat() * scoreSum;
-			int index = 0;
-			float countedScore = scores.get(0);
-			while (countedScore < randomScore) {
-				index++;
-				countedScore += scores.get(index);
-			}
-			nextTilePos = usableCoords.get(index);
-		}
 	}
 
 	private static void createInitialKingdoms(GameState gameState) {
