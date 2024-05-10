@@ -6,7 +6,6 @@ export class Game extends Scene {
     controls: Phaser.Cameras.Controls.SmoothedKeyControl;
     camera: Phaser.Cameras.Scene2D.Camera;
     gameMap: GameMap;
-    border = { top: 20000, bottom: 0, left: 20000, right: 0 };
 
     constructor() {
         super("Game");
@@ -14,12 +13,12 @@ export class Game extends Scene {
 
     create() {
         this.camera = this.cameras.main;
-        this.border = { top: 20000, bottom: 0, left: 20000, right: 0 };
         const map = this.add.tilemap("map");
         const tileset = map.addTilesetImage("tileset", "tiles");
         map.createLayer("island", tileset!);
 
         this.gameMap = new GameMap(map, 1715300692539, 50, -3);
+        // this.gameMap = new GameMap(map, 42, 50, -3);
         this.gameMap.GenerateMap();
 
         const cursors = this.input.keyboard!.createCursorKeys();
@@ -51,10 +50,6 @@ export class Game extends Scene {
         // const graf = this.add.graphics({ x: 0, y: 0 });
         // map.renderDebugFull(graf);
         this.gameMap.tileList.forEach((tile, order) => {
-            this.border.left = Math.min(this.border.left, tile.pixelX);
-            this.border.bottom = Math.max(this.border.bottom, tile.bottom);
-            this.border.right = Math.max(this.border.right, tile.right);
-            this.border.top = Math.min(this.border.top, tile.pixelY);
             this.add.text(tile.pixelX, tile.pixelY, order.toString(), {
                 color: "red",
                 fontSize: 22,
@@ -65,19 +60,20 @@ export class Game extends Scene {
     }
 
     scaleAndCenter() {
+        const { bottom, left, right, top } = this.gameMap.border;
         // Calculate map width and height
-        const mapWidth = this.border.right - this.border.left;
-        const mapHeight = this.border.bottom - this.border.top;
+        const mapWidth = right - left;
+        const mapHeight = bottom - top;
         // Calculate center of the map
-        const centerX = (this.border.left + this.border.right) / 2;
-        const centerY = (this.border.top + this.border.bottom) / 2;
+        const centerX = (left + right) / 2;
+        const centerY = (top + bottom) / 2;
         // Calculate desired camera view width and height with margin
         const margin = 50; // Adjust the margin as needed
         const desiredWidth = mapWidth + 2 * margin;
         const desiredHeight = mapHeight + 2 * margin;
         // Calculate zoom level needed to fit the entire map within the camera view
-        const zoomX = this.cameras.main.width / desiredWidth;
-        const zoomY = this.cameras.main.height / desiredHeight;
+        const zoomX = this.camera.width / desiredWidth;
+        const zoomY = this.camera.height / desiredHeight;
         const zoom = Math.min(zoomX, zoomY);
         // Set camera position to the center of the map
         this.camera.centerOn(centerX, centerY);

@@ -8,6 +8,7 @@ export class GameMap {
     density: number;
     players: Player[];
     rng: Random;
+    border = { top: 20000, bottom: 0, left: 20000, right: 0 };
     constructor(
         map: Phaser.Tilemaps.Tilemap,
         seed = 42,
@@ -18,6 +19,7 @@ export class GameMap {
         this.setSeed(seed);
         this.landMass = landMass;
         this.density = density;
+        this.border = { top: 20000, bottom: 0, left: 20000, right: 0 };
         const HP = new Player(0, PlayerTypes.HUMAN);
         const P1 = new Player(1, PlayerTypes.AI);
         const P2 = new Player(2, PlayerTypes.AI);
@@ -32,6 +34,13 @@ export class GameMap {
     }
     GenerateMap() {
         this.generateTiles();
+        // do {
+        //     createInitialKingdoms();
+        // } while (!doesEveryPlayerHaveKingdom());
+        // createTrees(gameState, vegetationDensity, random);
+        // createCapitals(gameState);
+        // sortPlayersByIncome(gameState);
+        // createMoney(gameState);
     }
     tileFromColor(color: number) {
         const playerTileIndex = [2, 5, 3, 4, 1, 6];
@@ -55,11 +64,18 @@ export class GameMap {
     }
     placeTile(pos: { x: number; y: number }, color: number) {
         const offpos = this.axial_to_offset(pos);
-        return this.map.putTileAt(
+        const tile = this.map.putTileAt(
             this.tileFromColor(color),
             offpos.x,
             offpos.y
         )!;
+        this.tileList.push(tile);
+        this.border = {
+            left: Math.min(this.border.left, tile.pixelX),
+            bottom: Math.max(this.border.bottom, tile.bottom),
+            right: Math.max(this.border.right, tile.right),
+            top: Math.min(this.border.top, tile.pixelY),
+        };
     }
     generateTiles() {
         const tileAmountsToGenerate = new Map<Player, number>();
@@ -79,7 +95,7 @@ export class GameMap {
             if (remainingLandMass > 0) remainingLandMass--;
         });
         const remainingPlayers = players.slice();
-        let nextTilePos = this.offset_to_axial({ x: 50, y: 50 });
+        let nextTilePos = { x: 50, y: 25 }; // MapCenter
         const positionHistory: { x: number; y: number }[] = [];
 
         while (remainingPlayers.length > 0) {
@@ -88,7 +104,7 @@ export class GameMap {
                 this.rng.nextInt(remainingPlayers.length)
             );
             const player = remainingPlayers[playerIndex];
-            this.tileList.push(this.placeTile(currentTilePos, player.color));
+            this.placeTile(currentTilePos, player.color);
             if (tileAmountsToGenerate.get(player) === 1) {
                 remainingPlayers.splice(playerIndex, 1);
             } else {
