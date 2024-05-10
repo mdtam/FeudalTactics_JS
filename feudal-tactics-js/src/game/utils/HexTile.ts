@@ -25,6 +25,10 @@ export class HexTile {
         }
     }
 
+    equals(other: HexTile) {
+        return other.q == this.q && other.r == this.r;
+    }
+
     tileFromColor = (color: number) => [2, 5, 3, 4, 1, 6][color];
 
     getOffset = (): { row: number; col: number } => ({
