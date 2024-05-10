@@ -19,7 +19,7 @@ export class Game extends Scene {
         const tileset = map.addTilesetImage("tileset", "tiles");
         map.createLayer("island", tileset!);
 
-        this.gameMap = new GameMap(map, 45, 200, 2);
+        this.gameMap = new GameMap(map, 1715300692539, 50, -3);
         this.gameMap.GenerateMap();
 
         const cursors = this.input.keyboard!.createCursorKeys();

@@ -1,4 +1,5 @@
 import { Player, PlayerTypes } from "./Player";
+import { Random } from "./Random";
 export class GameMap {
     map: Phaser.Tilemaps.Tilemap;
     tileList: Phaser.Tilemaps.Tile[] = [];
@@ -6,6 +7,7 @@ export class GameMap {
     landMass: number;
     density: number;
     players: Player[];
+    rng: Random;
     constructor(
         map: Phaser.Tilemaps.Tilemap,
         seed = 42,
@@ -13,7 +15,7 @@ export class GameMap {
         density = 0
     ) {
         this.map = map;
-        this.seed = seed;
+        this.setSeed(seed);
         this.landMass = landMass;
         this.density = density;
         const HP = new Player(0, PlayerTypes.HUMAN);
@@ -24,11 +26,15 @@ export class GameMap {
         const P5 = new Player(5, PlayerTypes.AI);
         this.players = [HP, P1, P2, P3, P4, P5];
     }
+    setSeed(seed: number) {
+        this.seed = seed;
+        this.rng = new Random(seed);
+    }
     GenerateMap() {
         this.generateTiles();
     }
     tileFromColor(color: number) {
-        const playerTileIndex = [2, 3, 4, 5, 6, 1];
+        const playerTileIndex = [2, 5, 3, 4, 1, 6];
         return playerTileIndex[color];
     }
     axial_to_offset(pos: { x: number; y: number }): {
@@ -57,7 +63,12 @@ export class GameMap {
     }
     generateTiles() {
         const tileAmountsToGenerate = new Map<Player, number>();
-        const players = this.players.slice().sort(() => Math.random() - 0.5); // Shuffle players
+        const players = this.players.slice(); //this.players.slice().sort(() => Math.random() - 0.5); // Shuffle players
+        for (let i = players.length - 1; i > 0; i--) {
+            const j = this.rng.nextInt(i + 1);
+            [players[i], players[j]] = [players[j], players[i]];
+        }
+
         let remainingLandMass = this.landMass % players.length;
         players.forEach((player) => {
             const additionalTiles = remainingLandMass > 0 ? 1 : 0;
@@ -74,7 +85,7 @@ export class GameMap {
         while (remainingPlayers.length > 0) {
             const currentTilePos = { ...nextTilePos };
             const playerIndex = Math.floor(
-                Math.random() * remainingPlayers.length
+                this.rng.nextInt(remainingPlayers.length)
             );
             const player = remainingPlayers[playerIndex];
             this.tileList.push(this.placeTile(currentTilePos, player.color));
@@ -101,7 +112,7 @@ export class GameMap {
                 )
             );
             const scoreSum = scores.reduce((sum, score) => sum + score, 0);
-            const randomScore = Math.random() * scoreSum;
+            const randomScore = this.rng.nextFloat() * scoreSum;
             let index = 0;
             let countedScore = scores[0];
             while (countedScore < randomScore) {
