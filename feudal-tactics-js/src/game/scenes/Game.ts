@@ -49,10 +49,12 @@ export class Game extends Scene {
 
         // const graf = this.add.graphics({ x: 0, y: 0 });
         // map.renderDebugFull(graf);
-        this.gameMap.tileList.forEach((tile, order) => {
-            this.add.text(tile.left, tile.top, order.toString(), {
-                color: "red",
-                fontSize: 22,
+        this.gameMap.tiles.forEach((row) => {
+            row.forEach((tile) => {
+                this.add.text(tile.left, tile.top, tile.order.toString(), {
+                    color: "red",
+                    fontSize: 22,
+                });
             });
         });
         this.scaleAndCenter();

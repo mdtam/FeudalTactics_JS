@@ -1,9 +1,12 @@
 import { Tilemaps } from "phaser";
 import { Player } from "./Player";
 
+let counter = 1;
+
 export class HexTile {
     readonly tile: Tilemaps.Tile;
     player: Player;
+    readonly order: number;
     readonly q: number;
     readonly r: number;
     readonly top: number;
@@ -21,6 +24,7 @@ export class HexTile {
         if (player) this.player = player;
         if (tile) {
             const { pixelX: left, pixelY: top, bottom, right } = tile;
+            this.order = counter++;
             Object.assign(this, { tile, left, bottom, right, top });
         }
     }
@@ -66,7 +70,11 @@ export class HexTile {
             { q: this.q + 1, r: this.r },
             { q: this.q, r: this.r + 1 },
             { q: this.q - 1, r: this.r + 1 },
-        ];
+        ].filter(({ q, r }) => {
+            // Within Map Boundaries
+            const { col, row } = { col: q, row: r + (q - (q & 1)) / 2 };
+            return col > 0 && col < 100 && row > 0 && row < 100;
+        });
     }
 }
 

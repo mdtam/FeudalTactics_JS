@@ -1,15 +1,17 @@
 import { Player, PlayerTypes } from "./Player";
 import { Random } from "./Random";
 import { HexTile } from "./HexTile";
+import { Kingdom } from "./Kingdom";
 
 export class GameMap {
     readonly map: Phaser.Tilemaps.Tilemap;
-    tileList: HexTile[] = [];
+    tiles: Array<Array<HexTile>> = [];
     readonly seed: number;
     readonly landMass: number;
     readonly density: number;
     readonly players: Player[];
     readonly rng: Random;
+    kingdoms: Kingdom[] = [];
     border = { top: 20000, bottom: 0, left: 20000, right: 0 };
 
     constructor(
@@ -19,6 +21,10 @@ export class GameMap {
         density = 0,
         players?: Player[]
     ) {
+        if (seed === 0) {
+            seed = Date.now();
+        }
+
         this.map = map;
         this.seed = seed;
         this.rng = new Random(seed);
@@ -35,8 +41,8 @@ export class GameMap {
 
     GenerateMap() {
         this.generateTiles();
+        this.createInitialKingdoms();
         // do {
-        //     createInitialKingdoms();
         // } while (!doesEveryPlayerHaveKingdom());
         // createTrees(gameState, vegetationDensity, random);
         // createCapitals(gameState);
@@ -44,10 +50,58 @@ export class GameMap {
         // createMoney(gameState);
     }
 
+    createInitialKingdoms() {
+        this.kingdoms = [];
+        //     this.tileList.forEach((tile: HexTile) => {
+        //         for (const neighborTile of HexMapHelper.getNeighborTiles(
+        //             gameState.getMap(),
+        //             tile
+        //         )) {
+        //             if (
+        //                 !neighborTile ||
+        //                 neighborTile.getPlayer() !== tile.getPlayer()
+        //             ) {
+        //                 // water or tile of a different player
+        //                 continue;
+        //             }
+        //             // two neighboring tiles belong to the same player
+        //             if (!tile.getKingdom() && !neighborTile.getKingdom()) {
+        //                 // none of the tiles already belong to a kingdom --> create a new one
+        //                 const newKingdom = new Kingdom(tile.getPlayer());
+        //                 gameState.getKingdoms().add(newKingdom);
+        //                 newKingdom.getTiles().push(tile, neighborTile);
+        //                 tile.setKingdom(newKingdom);
+        //                 neighborTile.setKingdom(newKingdom);
+        //             } else if (tile.getKingdom() && !neighborTile.getKingdom()) {
+        //                 // tile belongs to a kingdom but neighbor does not -> add neighbor to existing kingdom
+        //                 tile.getKingdom().getTiles().push(neighborTile);
+        //                 neighborTile.setKingdom(tile.getKingdom());
+        //             } else if (!tile.getKingdom() && neighborTile.getKingdom()) {
+        //                 // neighbor belongs to a kingdom but tile does not -> add tile to existing kingdom
+        //                 neighborTile.getKingdom().getTiles().push(tile);
+        //                 tile.setKingdom(neighborTile.getKingdom());
+        //             } else if (
+        //                 tile.getKingdom() &&
+        //                 neighborTile.getKingdom() &&
+        //                 tile.getKingdom() !== neighborTile.getKingdom()
+        //             ) {
+        //                 // tile and neighbor belong to different kingdoms --> merge kingdoms
+        //                 gameState.getKingdoms().delete(neighborTile.getKingdom());
+        //                 for (const neighborKingdomTile of neighborTile
+        //                     .getKingdom()
+        //                     .getTiles()) {
+        //                     neighborKingdomTile.setKingdom(tile.getKingdom());
+        //                     tile.getKingdom().getTiles().push(neighborKingdomTile);
+        //                 }
+        //             }
+        //         }
+        //     });
+    }
+
     generateTiles() {
         // Clean up
         this.map.fill(-1, 0, 0, 100, 100, false);
-        this.tileList = [];
+        this.tiles = new Array<Array<HexTile>>(1000);
         this.border = { top: 20000, bottom: 0, left: 20000, right: 0 };
 
         // Shuffle Players
@@ -90,7 +144,10 @@ export class GameMap {
 
             // Put Tile -- (assignment for immutability)
             let currentTilePos = nextTilePos.place(this.map, player);
-            this.tileList.push(currentTilePos);
+            if (!this.tiles[currentTilePos.q]) {
+                this.tiles[currentTilePos.q] = new Array<HexTile>(1000);
+            }
+            this.tiles[currentTilePos.q][currentTilePos.r] = currentTilePos;
             positionHistory.push(currentTilePos);
             this.border = {
                 left: Math.min(this.border.left, currentTilePos.left),
@@ -125,16 +182,7 @@ export class GameMap {
 
     getUnusedNeighborCoords = (tile: HexTile): { q: number; r: number }[] =>
         tile
-            // Get Neighbors
-            .getNeighborCoords()
-            // Within Map Boundaries
-            .filter(({ q, r }) => {
-                const { col, row } = new HexTile({ q, r }).getOffset();
-                return col > 0 && col < 100 && row > 0 && row < 100;
-            })
-            // Filter Unused
-            .filter(
-                ({ q, r }) => !this.tileList.some((t) => t.q == q && t.r == r)
-            );
+            .getNeighborCoords() // Filter Unused
+            .filter(({ q, r }) => !(this.tiles[q] && this.tiles[q][r]));
 }
 
