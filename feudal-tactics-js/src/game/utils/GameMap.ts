@@ -61,13 +61,7 @@ export class GameMap {
         this.kingdoms = [];
         this.tiles.forEach((row) => {
             row.forEach((tile) => {
-                for (const neighborTile of tile
-                    .getNeighborCoords()
-                    .map(({ q, r }) =>
-                        this.tiles[q] && this.tiles[q][r]
-                            ? this.tiles[q][r]
-                            : null
-                    )) {
+                for (const neighborTile of this.getNeighborTiles(tile)) {
                     if (!neighborTile || neighborTile.player !== tile.player) {
                         // water or tile of a different player
                         continue;
@@ -202,6 +196,13 @@ export class GameMap {
         }
     }
 
+    // HEX
+    getNeighborTiles = (tile: HexTile): (HexTile | null)[] =>
+        tile
+            .getNeighborCoords()
+            .map(({ q, r }) =>
+                this.tiles[q] && this.tiles[q][r] ? this.tiles[q][r] : null
+            );
     getUnusedNeighborCoords = (tile: HexTile): { q: number; r: number }[] =>
         tile
             .getNeighborCoords() // Filter Unused
