@@ -29,34 +29,6 @@ public class HexMapHelper {
 		throw new AssertionError();
 	}
 
-	/**
-	 * Converts hex coordinates to world coordinates.
-	 * 
-	 * @param hexCoords x and y coordinates of the tile
-	 * @return x and y coordinates of the center of the tile
-	 */
-	public static Vector2 hexCoordsToWorldCoords(Vector2 hexCoords) {
-		// https://www.redblobgames.com/grids/hexagons/#hex-to-pixel
-		// get third coordinate
-		float cubeZ = -hexCoords.x - hexCoords.y;
-		// calculate world coordinates
-		float worldX = hexCoords.x * HEX_OUTER_RADIUS * 1.5F;
-		float worldY = (float) (HEX_OUTER_RADIUS * (Math.sqrt(3) / 2 * hexCoords.x + Math.sqrt(3) * cubeZ));
-		return new Vector2(worldX, worldY);
-	}
-
-	/**
-	 * Converts world coordinates to hex coordinates.
-	 * 
-	 * @param worldCoords x and y coordinates of a point in the world
-	 * @return x and y coordinates of the tile the point belongs to (or would if
-	 *         there was one)
-	 */
-	public static Vector2 worldCoordsToHexCoords(Vector2 worldCoords) {
-		float hexX = (2F / 3 * worldCoords.x) / HEX_OUTER_RADIUS;
-		float hexY = (float) ((-1F / 3 * worldCoords.x + Math.sqrt(3) / 3 * worldCoords.y) / HEX_OUTER_RADIUS);
-		return roundToHexCoords(new Vector2(hexX, hexY));
-	}
 
 	/**
 	 * Takes fractional hex coordinates and returns the hex coordinates of the tile
@@ -87,24 +59,6 @@ public class HexMapHelper {
 	}
 
 	/**
-	 * Returns the coordinates of all 6 neighbor tiles for the given tile
-	 * coordinates. Does not check if there are actually tiles on those positions.
-	 * 
-	 * @param tileCoords coordinates of the center tile
-	 * @return neighbors' coordinates
-	 */
-	public static List<Vector2> getNeighborCoords(Vector2 tileCoords) {
-		ArrayList<Vector2> neighbors = new ArrayList<>();
-		neighbors.add(new Vector2(tileCoords.x - 1, tileCoords.y));
-		neighbors.add(new Vector2(tileCoords.x, tileCoords.y - 1));
-		neighbors.add(new Vector2(tileCoords.x + 1, tileCoords.y - 1));
-		neighbors.add(new Vector2(tileCoords.x + 1, tileCoords.y));
-		neighbors.add(new Vector2(tileCoords.x, tileCoords.y + 1));
-		neighbors.add(new Vector2(tileCoords.x - 1, tileCoords.y + 1));
-		return neighbors;
-	}
-
-	/**
 	 * Returns the coordinates of all 12 tiles that are 2 tiles away from the given
 	 * tile coordinates (neighbors' neighbors). Does not check if there are actually
 	 * tiles on those positions.
@@ -127,38 +81,6 @@ public class HexMapHelper {
 		neighborsNeighbors.add(new Vector2(tileCoords.x - 2, tileCoords.y));
 		neighborsNeighbors.add(new Vector2(tileCoords.x - 1, tileCoords.y - 1));
 		return neighborsNeighbors;
-	}
-
-	/**
-	 * Returns all neighbor tiles for the given tile. May contain null if there are
-	 * empty neighbor positions.
-	 * 
-	 * @param tile center tile
-	 * @return neighbor tiles
-	 */
-	public static List<HexTile> getNeighborTiles(Map<Vector2, HexTile> map, HexTile tile) {
-		List<HexTile> cachedNeighbors = tile.getCachedNeighborTiles();
-		if (cachedNeighbors == null) {
-			cachedNeighbors = getNeighborTiles(map, tile.getPosition());
-			tile.setCachedNeighborTiles(cachedNeighbors);
-		}
-		return cachedNeighbors;
-	}
-
-	/**
-	 * Returns all neighbor tiles for the given tile coordinates. May contain null
-	 * if there are empty neighbor positions.
-	 * 
-	 * @param tileCoords coordinates of the center tile
-	 * @return neighbor tiles
-	 */
-	private static List<HexTile> getNeighborTiles(Map<Vector2, HexTile> map, Vector2 tileCoords) {
-		List<Vector2> neighborCoords = getNeighborCoords(tileCoords);
-		List<HexTile> neighborTiles = new ArrayList<>();
-		for (Vector2 coord : neighborCoords) {
-			neighborTiles.add(map.get(coord));
-		}
-		return neighborTiles;
 	}
 
 	public static List<HexTile> getNeighborsNeighborTiles(Map<Vector2, HexTile> map, HexTile tile) {

@@ -138,16 +138,6 @@ public class GameStateHelper {
 		generateMap(gameState, players, landMass, density, vegetationDensity, random);
 	}
 
-	private static boolean doesEveryPlayerHaveKingdom(GameState gameState) {
-		List<Player> playersWithoutKingdoms = new ArrayList<>(gameState.getPlayers());
-		for (Kingdom kingdom : gameState.getKingdoms()) {
-			if (playersWithoutKingdoms.contains(kingdom.getPlayer())) {
-				playersWithoutKingdoms.remove(kingdom.getPlayer());
-			}
-		}
-		return playersWithoutKingdoms.isEmpty();
-	}
-
 	private static void sortPlayersByIncome(GameState gameState) {
 		gameState.getPlayers().sort((a, b) -> {
 			// if they are the same, it doesn't matter
@@ -157,47 +147,6 @@ public class GameStateHelper {
 					.mapToInt(GameStateHelper::getKingdomIncome).sum();
 			return incomeA > incomeB ? 1 : -1;
 		});
-	}
-
-	private static void createInitialKingdoms(GameState gameState) {
-		gameState.getKingdoms().clear();
-		for (Entry<Vector2, HexTile> tileEntry : gameState.getMap().entrySet()) {
-			HexTile tile = tileEntry.getValue();
-			for (HexTile neighborTile : HexMapHelper.getNeighborTiles(gameState.getMap(), tile)) {
-				if (neighborTile == null || neighborTile.getPlayer() != tile.getPlayer()) {
-					// water or tile of a different player
-					continue;
-				}
-				// two neighboring tiles belong to the same player
-				if (tile.getKingdom() == null && neighborTile.getKingdom() == null) {
-					// none of the tiles already belong to a kingdom --> create a new one
-					Kingdom newKingdom = new Kingdom(tile.getPlayer());
-					gameState.getKingdoms().add(newKingdom);
-					newKingdom.getTiles().add(tile);
-					newKingdom.getTiles().add(neighborTile);
-					tile.setKingdom(newKingdom);
-					neighborTile.setKingdom(newKingdom);
-				} else if (tile.getKingdom() != null && neighborTile.getKingdom() == null) {
-					// tile belongs to a kingdom but neighbor does not -> add neighbor to existing
-					// kingdom
-					tile.getKingdom().getTiles().add(neighborTile);
-					neighborTile.setKingdom(tile.getKingdom());
-				} else if (tile.getKingdom() == null && neighborTile.getKingdom() != null) {
-					// neighbor belongs to a kingdom but tile does not -> add tile to existing
-					// kingdom
-					neighborTile.getKingdom().getTiles().add(tile);
-					tile.setKingdom(neighborTile.getKingdom());
-				} else if (tile.getKingdom() != null && neighborTile.getKingdom() != null
-						&& tile.getKingdom() != neighborTile.getKingdom()) {
-					// tile and neighbor belong to different kingdoms --> merge kingdoms
-					gameState.getKingdoms().remove(neighborTile.getKingdom());
-					for (HexTile neighborKingdomTile : neighborTile.getKingdom().getTiles()) {
-						neighborKingdomTile.setKingdom(tile.getKingdom());
-						tile.getKingdom().getTiles().add(neighborKingdomTile);
-					}
-				}
-			}
-		}
 	}
 
 	private static void createCapitals(GameState gameState) {
