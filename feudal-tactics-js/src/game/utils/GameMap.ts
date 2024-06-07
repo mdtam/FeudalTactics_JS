@@ -51,9 +51,9 @@ export class GameMap {
     }
 
     doesEveryPlayerHaveKingdom() {
-        const playersWithoutKingdoms = this.players.filter((p) => {
-            !this.kingdoms.some((k) => k.getPlayer() === p);
-        });
+        const playersWithoutKingdoms = this.players.filter(
+            (p) => !this.kingdoms.some((k) => k.getPlayer() === p)
+        );
         return !playersWithoutKingdoms.length;
     }
 
