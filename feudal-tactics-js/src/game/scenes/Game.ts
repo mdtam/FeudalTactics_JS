@@ -18,7 +18,7 @@ export class Game extends Scene {
         map.createLayer("island", tileset!);
 
         // this.gameMap = new GameMap(map, 1715300692539, 50, -3);
-        this.gameMap = new GameMap(map, 0, 50, -3);
+        this.gameMap = new GameMap(map, 0, 150, 3);
         this.gameMap.GenerateMap();
 
         const cursors = this.input.keyboard!.createCursorKeys();
@@ -58,6 +58,40 @@ export class Game extends Scene {
             });
         });
         this.scaleAndCenter();
+
+        this.input.on(
+            "wheel",
+            (
+                _pointer: Phaser.Input.Pointer,
+                _gameObjects: unknown,
+                _deltaX: number,
+                deltaY: number
+            ) => {
+                if (deltaY > 0) {
+                    const newZoom = this.camera.zoom - 0.1;
+                    if (newZoom > 0.19) {
+                        this.camera.zoom = newZoom;
+                    }
+                }
+
+                if (deltaY < 0) {
+                    const newZoom = this.camera.zoom + 0.1;
+                    if (newZoom < 2) {
+                        this.camera.zoom = newZoom;
+                    }
+                }
+            }
+        );
+
+        this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
+            if (!pointer.isDown) return;
+
+            this.camera.scrollX -=
+                (pointer.x - pointer.prevPosition.x) / this.camera.zoom;
+            this.camera.scrollY -=
+                (pointer.y - pointer.prevPosition.y) / this.camera.zoom;
+        });
+
         EventBus.emit("current-scene-ready", this);
     }
 
