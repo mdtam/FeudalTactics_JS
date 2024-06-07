@@ -1,11 +1,13 @@
 import { Tilemaps } from "phaser";
 import { Player } from "./Player";
+import { Kingdom } from "./Kingdom";
 
 let counter = 1;
 
 export class HexTile {
     readonly tile: Tilemaps.Tile;
     player: Player;
+    kingdom: Kingdom;
     readonly order: number;
     readonly q: number;
     readonly r: number;
@@ -29,6 +31,21 @@ export class HexTile {
         }
     }
 
+    // GAME
+    getPlayer() {
+        return this.player;
+    }
+    getKingdom() {
+        return this.kingdom;
+    }
+    setKingdom(kingdom: Kingdom) {
+        this.kingdom = kingdom;
+        if (kingdom) {
+            this.player = kingdom.getPlayer();
+        }
+    }
+
+    // HEX
     equals(other: HexTile) {
         return other.q == this.q && other.r == this.r;
     }
