@@ -49,9 +49,9 @@ export class Game extends Scene {
 
         // const graf = this.add.graphics({ x: 0, y: 0 });
         // map.renderDebugFull(graf);
-        this.gameMap.tiles.forEach((row) => {
-            row.forEach((tile) => {
-                this.add.text(tile.left, tile.top, tile.order.toString(), {
+        this.gameMap.kingdoms.forEach((kingdom, id) => {
+            kingdom.getTiles().forEach((tile) => {
+                this.add.text(tile.left, tile.top, id.toString(), {
                     color: "red",
                     fontSize: 22,
                 });

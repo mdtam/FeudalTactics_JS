@@ -40,14 +40,21 @@ export class GameMap {
     }
 
     GenerateMap() {
-        this.generateTiles();
-        this.createInitialKingdoms();
-        // do {
-        // } while (!doesEveryPlayerHaveKingdom());
+        do {
+            this.generateTiles();
+            this.createInitialKingdoms();
+        } while (!this.doesEveryPlayerHaveKingdom());
         // createTrees(gameState, vegetationDensity, random);
         // createCapitals(gameState);
         // sortPlayersByIncome(gameState);
         // createMoney(gameState);
+    }
+
+    doesEveryPlayerHaveKingdom() {
+        const playersWithoutKingdoms = this.players.filter((p) => {
+            !this.kingdoms.some((k) => k.getPlayer() === p);
+        });
+        return !playersWithoutKingdoms.length;
     }
 
     createInitialKingdoms() {
@@ -63,7 +70,7 @@ export class GameMap {
                     )) {
                     if (!neighborTile || neighborTile.player !== tile.player) {
                         // water or tile of a different player
-                        return;
+                        continue;
                     }
                     // two neighboring tiles belong to the same player
                     if (!tile.kingdom && !neighborTile.kingdom) {
