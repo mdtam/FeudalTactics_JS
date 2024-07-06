@@ -1,4 +1,4 @@
-type MapObject ={
+type MapObject = {
     spriteName:string;
     strength: number;
 };
