@@ -1,6 +1,6 @@
 import { HexTile } from "./HexTile";
 import { Kingdom } from "./Kingdom";
-import { Tree, Capital } from "./MapObjects";
+import { Capital, Tree } from "./MapObjects";
 import { Player, PlayerTypes } from "./Player";
 import { Random } from "./Random";
 
@@ -50,6 +50,10 @@ export class GameMap {
         this.createCapitals();
         // sortPlayersByIncome(gameState);
         // createMoney(gameState);
+
+        // NEXT: fix the game state, setup architecture.
+        //       Create Game Controller. EVENT BUS??
+        //       PALM trees. CONQUERING tiles and etc
     }
 
     createTrees(vegitationDensity: number) {
