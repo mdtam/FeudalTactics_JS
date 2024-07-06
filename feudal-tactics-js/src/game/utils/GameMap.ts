@@ -48,7 +48,7 @@ export class GameMap {
         } while (!this.doesEveryPlayerHaveKingdom());
         this.createTrees(0.1);
         this.createCapitals();
-        // sortPlayersByIncome(gameState);
+        this.sortPlayersByIncome();
         // createMoney(gameState);
 
         // NEXT: fix the game state, setup architecture.
@@ -217,6 +217,15 @@ export class GameMap {
             throw new Error("Kingdom with zero tiles!");
         }
         tile.setContents(this.map, Capital);
+    }
+
+    sortPlayersByIncome() {
+        this.players.sort((a,b)=>{
+            const incomeA = this.kingdoms.filter(k=>k.getPlayer()==a).reduce((s,k)=> s+k.income, 0);
+            const incomeB = this.kingdoms.filter(k=>k.getPlayer()==b).reduce((s,k)=> s+k.income, 0);
+
+            return incomeA - incomeB;
+        })
     }
 
     // HEX

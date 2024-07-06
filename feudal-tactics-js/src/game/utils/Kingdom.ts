@@ -1,4 +1,5 @@
 import { HexTile } from "./HexTile";
+import { PalmTree, Tree } from "./MapObjects";
 import { Player } from "./Player";
 
 /** Group of connected tiles that belong to the same player. **/
@@ -51,6 +52,13 @@ export class Kingdom {
 
     setWasActiveInCurrentTurn(wasActiveInCurrentTurn: boolean): void {
         this.wasActiveInCurrentTurn = wasActiveInCurrentTurn;
+    }
+
+    get income() {
+        // You get 1 unit of income per tile. Excluding any tiles with trees:
+        return this.getTiles().filter(
+            (t) => t.contents !== Tree && t.contents !== PalmTree
+        ).length;
     }
 
     equals(obj: Kingdom): boolean {
