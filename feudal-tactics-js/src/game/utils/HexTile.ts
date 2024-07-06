@@ -1,6 +1,7 @@
-import { Tilemaps } from "phaser";
+import { GameObjects, Tilemaps } from "phaser";
 import { Kingdom } from "./Kingdom";
 import { Player } from "./Player";
+import { MapObject } from "./MapObjects";
 
 export class HexTile {
     readonly tile: Tilemaps.Tile;
@@ -13,6 +14,10 @@ export class HexTile {
     readonly left: number;
     readonly right: number;
     readonly bottom: number;
+
+    contents?: MapObject;
+    sprite?: GameObjects.Sprite;
+
 
     constructor(
         pos: { q: number; r: number },
@@ -74,6 +79,15 @@ export class HexTile {
             offpos.row
         )!;
         return new HexTile(this.pos(), player, tile);
+    }
+
+    setContents(map: Tilemaps.Tilemap, obj: MapObject) {
+        // Delete old sprite if exists:
+        this.sprite?.destroy();
+        this.contents = obj;
+        this.sprite = map.scene.add
+            .sprite(this.left, this.top, this.contents.spriteName)
+            .setOrigin(0, 0);
     }
 
     getNeighborCoords(): { q: number; r: number }[] {

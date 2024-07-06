@@ -1,5 +1,6 @@
 import { HexTile } from "./HexTile";
 import { Kingdom } from "./Kingdom";
+import { Tree, Capital } from "./MapObjects";
 import { Player, PlayerTypes } from "./Player";
 import { Random } from "./Random";
 
@@ -46,7 +47,7 @@ export class GameMap {
             this.createInitialKingdoms();
         } while (!this.doesEveryPlayerHaveKingdom());
         this.createTrees(0.1);
-        // createCapitals(gameState);
+        this.createCapitals();
         // sortPlayersByIncome(gameState);
         // createMoney(gameState);
     }
@@ -54,7 +55,7 @@ export class GameMap {
     createTrees(vegitationDensity: number) {
         for (const tile of this.orderedTiles) {
             if (this.rng.nextFloat() <= vegitationDensity) {
-                this.map.scene.add.sprite(tile.left, tile.top, "tree").setOrigin(0, 0);
+                tile.setContents(this.map, Tree);
             }
         }
     }
@@ -68,58 +69,48 @@ export class GameMap {
 
     createInitialKingdoms() {
         this.kingdoms = [];
-        this.tiles.forEach((row) => {
-            row.forEach((tile) => {
-                for (const neighborTile of this.getNeighborTiles(tile)) {
-                    if (!neighborTile || neighborTile.player !== tile.player) {
-                        // water or tile of a different player
-                        continue;
-                    }
-                    // two neighboring tiles belong to the same player
-                    if (!tile.kingdom && !neighborTile.kingdom) {
-                        // none of the tiles already belong to a kingdom --> create a new one
-                        const newKingdom = new Kingdom(tile.player);
-                        this.kingdoms.push(newKingdom);
-                        newKingdom.getTiles().push(tile, neighborTile);
-                        tile.setKingdom(newKingdom);
-                        neighborTile.setKingdom(newKingdom);
-                    } else if (
-                        tile.getKingdom() &&
-                        !neighborTile.getKingdom()
-                    ) {
-                        // tile belongs to a kingdom but neighbor does not -> add neighbor to existing kingdom
-                        tile.getKingdom().getTiles().push(neighborTile);
-                        neighborTile.setKingdom(tile.getKingdom());
-                    } else if (
-                        !tile.getKingdom() &&
-                        neighborTile.getKingdom()
-                    ) {
-                        // neighbor belongs to a kingdom but tile does not -> add tile to existing kingdom
-                        neighborTile.getKingdom().getTiles().push(tile);
-                        tile.setKingdom(neighborTile.getKingdom());
-                    } else if (
-                        tile.getKingdom() &&
-                        neighborTile.getKingdom() &&
-                        tile.getKingdom() !== neighborTile.getKingdom()
-                    ) {
-                        // tile and neighbor belong to different kingdoms --> merge kingdoms
-                        this.kingdoms.splice(
-                            this.kingdoms.findIndex(
-                                (k) => k === neighborTile.getKingdom()
-                            ),
-                            1
-                        );
-                        for (const neighborKingdomTile of neighborTile
-                            .getKingdom()
-                            .getTiles()) {
-                            neighborKingdomTile.setKingdom(tile.getKingdom());
-                            tile.getKingdom()
-                                .getTiles()
-                                .push(neighborKingdomTile);
-                        }
+        this.orderedTiles.forEach((tile) => {
+            for (const neighborTile of this.getNeighborTiles(tile)) {
+                if (!neighborTile || neighborTile.player !== tile.player) {
+                    // water or tile of a different player
+                    continue;
+                }
+                // two neighboring tiles belong to the same player
+                if (!tile.kingdom && !neighborTile.kingdom) {
+                    // none of the tiles already belong to a kingdom --> create a new one
+                    const newKingdom = new Kingdom(tile.player);
+                    this.kingdoms.push(newKingdom);
+                    newKingdom.getTiles().push(tile, neighborTile);
+                    tile.setKingdom(newKingdom);
+                    neighborTile.setKingdom(newKingdom);
+                } else if (tile.getKingdom() && !neighborTile.getKingdom()) {
+                    // tile belongs to a kingdom but neighbor does not -> add neighbor to existing kingdom
+                    tile.getKingdom().getTiles().push(neighborTile);
+                    neighborTile.setKingdom(tile.getKingdom());
+                } else if (!tile.getKingdom() && neighborTile.getKingdom()) {
+                    // neighbor belongs to a kingdom but tile does not -> add tile to existing kingdom
+                    neighborTile.getKingdom().getTiles().push(tile);
+                    tile.setKingdom(neighborTile.getKingdom());
+                } else if (
+                    tile.getKingdom() &&
+                    neighborTile.getKingdom() &&
+                    tile.getKingdom() !== neighborTile.getKingdom()
+                ) {
+                    // tile and neighbor belong to different kingdoms --> merge kingdoms
+                    this.kingdoms.splice(
+                        this.kingdoms.findIndex(
+                            (k) => k === neighborTile.getKingdom()
+                        ),
+                        1
+                    );
+                    for (const neighborKingdomTile of neighborTile
+                        .getKingdom()
+                        .getTiles()) {
+                        neighborKingdomTile.setKingdom(tile.getKingdom());
+                        tile.getKingdom().getTiles().push(neighborKingdomTile);
                     }
                 }
-            });
+            }
         });
     }
 
@@ -205,6 +196,23 @@ export class GameMap {
             }
             nextTilePos = new HexTile(usableCoords[index]);
         }
+    }
+
+    createCapitals() {
+        for (const kingdom of this.kingdoms) {
+            this.createCapital(kingdom);
+        }
+    }
+
+    createCapital(kingdom: Kingdom) {
+        // First, we try to find the first empty tile to use it as a capital. Otherwise, we pick any tile.
+        const tile =
+            kingdom.getTiles().find((t) => !t.contents) ||
+            kingdom.getTiles()[0];
+        if (!tile) {
+            throw new Error("Kingdom with zero tiles!");
+        }
+        tile.setContents(this.map, Capital);
     }
 
     // HEX
