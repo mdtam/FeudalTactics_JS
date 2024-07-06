@@ -1,11 +1,12 @@
-import { Player, PlayerTypes } from "./Player";
-import { Random } from "./Random";
 import { HexTile } from "./HexTile";
 import { Kingdom } from "./Kingdom";
+import { Player, PlayerTypes } from "./Player";
+import { Random } from "./Random";
 
 export class GameMap {
     readonly map: Phaser.Tilemaps.Tilemap;
     tiles: Array<Array<HexTile>> = [];
+    orderedTiles: Array<HexTile> = [];
     readonly seed: number;
     readonly landMass: number;
     readonly density: number;
@@ -44,10 +45,18 @@ export class GameMap {
             this.generateTiles();
             this.createInitialKingdoms();
         } while (!this.doesEveryPlayerHaveKingdom());
-        // createTrees(gameState, vegetationDensity, random);
+        this.createTrees(0.1);
         // createCapitals(gameState);
         // sortPlayersByIncome(gameState);
         // createMoney(gameState);
+    }
+
+    createTrees(vegitationDensity: number) {
+        for (const tile of this.orderedTiles) {
+            if (this.rng.nextFloat() <= vegitationDensity) {
+                this.map.scene.add.sprite(tile.left, tile.top, "tree").setOrigin(0, 0);
+            }
+        }
     }
 
     doesEveryPlayerHaveKingdom() {
@@ -118,6 +127,7 @@ export class GameMap {
         // Clean up
         this.map.fill(-1, 0, 0, 100, 100, false);
         this.tiles = new Array<Array<HexTile>>(1000);
+        this.orderedTiles = [];
         this.border = { top: 20000, bottom: 0, left: 20000, right: 0 };
 
         // Shuffle Players
@@ -164,6 +174,7 @@ export class GameMap {
                 this.tiles[currentTilePos.q] = new Array<HexTile>(1000);
             }
             this.tiles[currentTilePos.q][currentTilePos.r] = currentTilePos;
+            this.orderedTiles.push(currentTilePos);
             positionHistory.push(currentTilePos);
             this.border = {
                 left: Math.min(this.border.left, currentTilePos.left),

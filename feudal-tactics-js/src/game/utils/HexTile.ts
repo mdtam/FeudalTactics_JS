@@ -1,8 +1,6 @@
 import { Tilemaps } from "phaser";
-import { Player } from "./Player";
 import { Kingdom } from "./Kingdom";
-
-let counter = 1;
+import { Player } from "./Player";
 
 export class HexTile {
     readonly tile: Tilemaps.Tile;
@@ -26,7 +24,6 @@ export class HexTile {
         if (player) this.player = player;
         if (tile) {
             const { pixelX: left, pixelY: top, bottom, right } = tile;
-            this.order = counter++;
             Object.assign(this, { tile, left, bottom, right, top });
         }
     }

@@ -1,5 +1,5 @@
-import { EventBus } from "../EventBus";
 import { Scene } from "phaser";
+import { EventBus } from "../EventBus";
 import { GameMap } from "../utils/GameMap";
 
 export class Game extends Scene {
@@ -23,25 +23,25 @@ export class Game extends Scene {
 
         const cursors = this.input.keyboard!.createCursorKeys();
         const controlConfig: Phaser.Types.Cameras.Controls.SmoothedKeyControlConfig =
-            {
-                camera: this.camera,
-                left: cursors.left,
-                right: cursors.right,
-                up: cursors.up,
-                down: cursors.down,
-                zoomIn: this.input.keyboard!.addKey(
-                    Phaser.Input.Keyboard.KeyCodes.NUMPAD_SUBTRACT
-                ),
-                zoomOut: this.input.keyboard!.addKey(
-                    Phaser.Input.Keyboard.KeyCodes.NUMPAD_ADD
-                ),
-                zoomSpeed: 0.008,
-                minZoom: 0.19,
-                maxZoom: 2,
-                acceleration: 1.5,
-                drag: 0.07,
-                maxSpeed: 0.5,
-            };
+        {
+            camera: this.camera,
+            left: cursors.left,
+            right: cursors.right,
+            up: cursors.up,
+            down: cursors.down,
+            zoomIn: this.input.keyboard!.addKey(
+                Phaser.Input.Keyboard.KeyCodes.NUMPAD_SUBTRACT
+            ),
+            zoomOut: this.input.keyboard!.addKey(
+                Phaser.Input.Keyboard.KeyCodes.NUMPAD_ADD
+            ),
+            zoomSpeed: 0.008,
+            minZoom: 0.19,
+            maxZoom: 2,
+            acceleration: 1.5,
+            drag: 0.07,
+            maxSpeed: 0.5,
+        };
 
         this.controls = new Phaser.Cameras.Controls.SmoothedKeyControl(
             controlConfig
@@ -49,16 +49,23 @@ export class Game extends Scene {
 
         // const graf = this.add.graphics({ x: 0, y: 0 });
         // map.renderDebugFull(graf);
-        this.gameMap.kingdoms.forEach((kingdom, id) => {
-            kingdom.getTiles().forEach((tile) => {
-                this.add.text(tile.left, tile.top, id.toString(), {
-                    color: "red",
-                    fontSize: 22,
-                });
-            });
-        });
-        this.scaleAndCenter();
+        // this.gameMap.kingdoms.forEach((kingdom, id) => {
+        //     kingdom.getTiles().forEach((tile) => {
+        //         this.add.text(tile.left, tile.top, id.toString(), {
+        //             color: "red",
+        //             fontSize: 22,
+        //         });
+        //     });
+        // });
+        // this.gameMap.orderedTiles.forEach((tile, idx) => {
+        //     this.add.text(tile.left, tile.top, idx.toString(), {
+        //         color: "red",
+        //         fontSize: 22,
+        //     });
+        // })
 
+
+        this.scaleAndCenter();
         this.input.on(
             "wheel",
             (
