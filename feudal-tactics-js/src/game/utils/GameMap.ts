@@ -16,6 +16,8 @@ export class GameMap {
     kingdoms: Kingdom[] = [];
     border = { top: 20000, bottom: 0, left: 20000, right: 0 };
 
+    playerTurn: number;
+
     constructor(
         map: Phaser.Tilemaps.Tilemap,
         seed = 42,
@@ -49,7 +51,7 @@ export class GameMap {
         this.createTrees(0.1);
         this.createCapitals();
         this.sortPlayersByIncome();
-        // createMoney(gameState);
+        this.createMoney();
 
         // NEXT: fix the game state, setup architecture.
         //       Create Game Controller. EVENT BUS??
@@ -226,6 +228,21 @@ export class GameMap {
 
             return incomeA - incomeB;
         })
+    }
+
+    createMoney() {
+        for (const kingdom of this.kingdoms) {
+            let savings = Math.min(kingdom.getTiles().length*5, 20);
+			// players other than the first one will earn some money once their turn starts
+            if (this.activePlayer != kingdom.getPlayer()){
+                savings -= kingdom.income;
+            }
+            kingdom.setSavings(savings);
+        }
+    }
+
+    get activePlayer() {
+        return this.players[this.playerTurn];
     }
 
     // HEX
