@@ -56,6 +56,7 @@ export class GameMap {
         // NEXT: fix the game state, setup architecture.
         //       Create Game Controller. EVENT BUS??
         //       PALM trees. CONQUERING tiles and etc
+        //       Make it work multiplayer and online.
     }
 
     createTrees(vegitationDensity: number) {
