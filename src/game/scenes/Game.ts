@@ -6,6 +6,7 @@ export class Game extends Scene {
   controls: Phaser.Cameras.Controls.SmoothedKeyControl;
   camera: Phaser.Cameras.Scene2D.Camera;
   gameMap: GameMap;
+  background: Phaser.GameObjects.TileSprite;
 
   constructor() {
     super('Game');
@@ -14,6 +15,13 @@ export class Game extends Scene {
   create() {
     this.camera = this.cameras.main;
     const map = this.add.tilemap('map');
+    this.background = this.add.tileSprite(
+      map.widthInPixels / 2,
+      map.heightInPixels / 2,
+      map.widthInPixels,
+      map.heightInPixels,
+      'water'
+    );
     const tileset = map.addTilesetImage('tileset', 'tiles');
     map.createLayer('island', tileset!);
 
@@ -58,20 +66,24 @@ export class Game extends Scene {
     // });
 
     this.scaleAndCenter();
-    this.input.on('wheel', (_pointer: Phaser.Input.Pointer, _gameObjects: unknown, _deltaX: number, deltaY: number) => {
+    this.input.on('wheel', (pointer: Phaser.Input.Pointer, _gameObjects: unknown, _deltaX: number, deltaY: number) => {
+      const worldPointBefore = this.camera.getWorldPoint(pointer.x, pointer.y);
       if (deltaY > 0) {
         const newZoom = this.camera.zoom - 0.1;
         if (newZoom > 0.19) {
           this.camera.zoom = newZoom;
         }
       }
-
       if (deltaY < 0) {
         const newZoom = this.camera.zoom + 0.1;
         if (newZoom < 2) {
           this.camera.zoom = newZoom;
         }
       }
+      this.camera.preRender();
+      const worldPointAfter = this.camera.getWorldPoint(pointer.x, pointer.y);
+      this.camera.scrollX += worldPointBefore.x - worldPointAfter.x;
+      this.camera.scrollY += worldPointBefore.y - worldPointAfter.y;
     });
 
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
@@ -104,6 +116,7 @@ export class Game extends Scene {
     this.camera.centerOn(centerX, centerY);
     // Set camera zoom level
     this.camera.setZoom(zoom);
+    this.camera.setBounds(0, 0, this.gameMap.map.widthInPixels, this.gameMap.map.heightInPixels);
   }
 
   changeScene() {
@@ -119,5 +132,6 @@ export class Game extends Scene {
     this.controls.accelY = 1.5 / this.camera.zoom;
     this.controls.dragX = 0.07 / this.camera.zoom;
     this.controls.dragY = 0.07 / this.camera.zoom;
+    this.background.tilePositionX += 0.05;
   }
 }
