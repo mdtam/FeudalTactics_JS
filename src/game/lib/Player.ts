@@ -37,11 +37,7 @@ export class Player {
       return false;
     }
     const other = obj;
-    return (
-      this.color === other.color &&
-      this.defeated === other.defeated &&
-      this.type === other.type
-    );
+    return this.color === other.color && this.defeated === other.defeated && this.type === other.type;
   }
 
   toString() {

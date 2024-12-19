@@ -18,13 +18,7 @@ export class GameMap {
 
   playerTurn: number;
 
-  constructor(
-    map: Phaser.Tilemaps.Tilemap,
-    seed = 42,
-    landMass = 42,
-    density = 0,
-    players?: Player[]
-  ) {
+  constructor(map: Phaser.Tilemaps.Tilemap, seed = 42, landMass = 42, density = 0, players?: Player[]) {
     if (seed === 0) {
       seed = Date.now();
     }
@@ -68,9 +62,7 @@ export class GameMap {
   }
 
   doesEveryPlayerHaveKingdom() {
-    const playersWithoutKingdoms = this.players.filter(
-      (p) => !this.kingdoms.some((k) => k.getPlayer() === p)
-    );
+    const playersWithoutKingdoms = this.players.filter((p) => !this.kingdoms.some((k) => k.getPlayer() === p));
     return !playersWithoutKingdoms.length;
   }
 
@@ -98,19 +90,13 @@ export class GameMap {
           // neighbor belongs to a kingdom but tile does not -> add tile to existing kingdom
           neighborTile.getKingdom().getTiles().push(tile);
           tile.setKingdom(neighborTile.getKingdom());
-        } else if (
-          tile.getKingdom() &&
-          neighborTile.getKingdom() &&
-          tile.getKingdom() !== neighborTile.getKingdom()
-        ) {
+        } else if (tile.getKingdom() && neighborTile.getKingdom() && tile.getKingdom() !== neighborTile.getKingdom()) {
           // tile and neighbor belong to different kingdoms --> merge kingdoms
           this.kingdoms.splice(
             this.kingdoms.findIndex((k) => k === neighborTile.getKingdom()),
-            1
+            1,
           );
-          for (const neighborKingdomTile of neighborTile
-            .getKingdom()
-            .getTiles()) {
+          for (const neighborKingdomTile of neighborTile.getKingdom().getTiles()) {
             neighborKingdomTile.setKingdom(tile.getKingdom());
             tile.getKingdom().getTiles().push(neighborKingdomTile);
           }
@@ -138,10 +124,7 @@ export class GameMap {
     let remainingLandMass = this.landMass % players.length;
     players.forEach((player) => {
       const additionalTiles = remainingLandMass > 0 ? 1 : 0;
-      tileAmountsToGenerate.set(
-        player,
-        Math.floor(this.landMass / players.length) + additionalTiles
-      );
+      tileAmountsToGenerate.set(player, Math.floor(this.landMass / players.length) + additionalTiles);
       if (remainingLandMass > 0) remainingLandMass--;
     });
 
@@ -156,10 +139,7 @@ export class GameMap {
       if (tileAmountsToGenerate.get(player) === 1) {
         remainingPlayers.splice(playerIndex, 1);
       } else {
-        tileAmountsToGenerate.set(
-          player,
-          tileAmountsToGenerate.get(player)! - 1
-        );
+        tileAmountsToGenerate.set(player, tileAmountsToGenerate.get(player)! - 1);
       }
 
       // Put Tile -- (assignment for immutability)
@@ -184,10 +164,7 @@ export class GameMap {
         usableCoords = this.getUnusedNeighborCoords(currentTilePos);
       }
       const scores = usableCoords.map((candidate) =>
-        Math.pow(
-          this.getUnusedNeighborCoords(new HexTile(candidate)).length,
-          this.density
-        )
+        Math.pow(this.getUnusedNeighborCoords(new HexTile(candidate)).length, this.density),
       );
       const scoreSum = scores.reduce((sum, score) => sum + score, 0);
       const randomScore = this.rng.nextFloat() * scoreSum;
@@ -209,8 +186,7 @@ export class GameMap {
 
   createCapital(kingdom: Kingdom) {
     // First, we try to find the first empty tile to use it as a capital. Otherwise, we pick any tile.
-    const tile =
-      kingdom.getTiles().find((t) => !t.contents) || kingdom.getTiles()[0];
+    const tile = kingdom.getTiles().find((t) => !t.contents) || kingdom.getTiles()[0];
     if (!tile) {
       throw new Error('Kingdom with zero tiles!');
     }
@@ -219,12 +195,8 @@ export class GameMap {
 
   sortPlayersByIncome() {
     this.players.sort((a, b) => {
-      const incomeA = this.kingdoms
-        .filter((k) => k.getPlayer() == a)
-        .reduce((s, k) => s + k.income, 0);
-      const incomeB = this.kingdoms
-        .filter((k) => k.getPlayer() == b)
-        .reduce((s, k) => s + k.income, 0);
+      const incomeA = this.kingdoms.filter((k) => k.getPlayer() == a).reduce((s, k) => s + k.income, 0);
+      const incomeB = this.kingdoms.filter((k) => k.getPlayer() == b).reduce((s, k) => s + k.income, 0);
 
       return incomeA - incomeB;
     });
@@ -247,11 +219,7 @@ export class GameMap {
 
   // HEX
   getNeighborTiles = (tile: HexTile): (HexTile | null)[] =>
-    tile
-      .getNeighborCoords()
-      .map(({ q, r }) =>
-        this.tiles[q] && this.tiles[q][r] ? this.tiles[q][r] : null
-      );
+    tile.getNeighborCoords().map(({ q, r }) => (this.tiles[q] && this.tiles[q][r] ? this.tiles[q][r] : null));
   getUnusedNeighborCoords = (tile: HexTile): { q: number; r: number }[] =>
     tile
       .getNeighborCoords() // Filter Unused

@@ -18,11 +18,7 @@ export class HexTile {
   contents?: MapObject;
   sprite?: GameObjects.Sprite;
 
-  constructor(
-    pos: { q: number; r: number },
-    player?: Player,
-    tile?: Tilemaps.Tile
-  ) {
+  constructor(pos: { q: number; r: number }, player?: Player, tile?: Tilemaps.Tile) {
     this.q = pos.q;
     this.r = pos.r;
     if (player) this.player = player;
@@ -60,11 +56,7 @@ export class HexTile {
 
   pos = () => ({ q: this.q, r: this.r });
 
-  static fromOffset(
-    pos: { row: number; col: number },
-    player?: Player,
-    tile?: Tilemaps.Tile
-  ): HexTile {
+  static fromOffset(pos: { row: number; col: number }, player?: Player, tile?: Tilemaps.Tile): HexTile {
     const q = pos.col;
     const r = pos.row - (pos.col - (pos.col & 1)) / 2;
     return new HexTile({ q, r }, player, tile);
@@ -72,11 +64,7 @@ export class HexTile {
 
   place(map: Tilemaps.Tilemap, player: Player) {
     const offpos = this.getOffset();
-    const tile = map.putTileAt(
-      this.tileFromColor(player.color),
-      offpos.col,
-      offpos.row
-    )!;
+    const tile = map.putTileAt(this.tileFromColor(player.color), offpos.col, offpos.row)!;
     return new HexTile(this.pos(), player, tile);
   }
 
@@ -84,9 +72,7 @@ export class HexTile {
     // Delete old sprite if exists:
     this.sprite?.destroy();
     this.contents = obj;
-    this.sprite = map.scene.add
-      .sprite(this.left, this.top, this.contents.spriteName)
-      .setOrigin(0, 0);
+    this.sprite = map.scene.add.sprite(this.left, this.top, this.contents.spriteName).setOrigin(0, 0);
   }
 
   getNeighborCoords(): { q: number; r: number }[] {

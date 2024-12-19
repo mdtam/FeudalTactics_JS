@@ -74,10 +74,7 @@ function App() {
           </button>
         </div>
         <div>
-          <button
-            disabled={canMoveSprite}
-            className="button"
-            onClick={moveSprite}>
+          <button disabled={canMoveSprite} className="button" onClick={moveSprite}>
             Toggle Movement
           </button>
         </div>

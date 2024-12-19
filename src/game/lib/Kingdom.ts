@@ -56,9 +56,7 @@ export class Kingdom {
 
   get income() {
     // You get 1 unit of income per tile. Excluding any tiles with trees:
-    return this.getTiles().filter(
-      (t) => t.contents !== Tree && t.contents !== PalmTree
-    ).length;
+    return this.getTiles().filter((t) => t.contents !== Tree && t.contents !== PalmTree).length;
   }
 
   equals(obj: Kingdom): boolean {
@@ -82,8 +80,6 @@ export class Kingdom {
   toString(): string {
     return `Kingdom [tiles=${this.tiles.map((tile) => tile.pos())}, player=${
       this.player
-    }, savings=${this.savings}, doneMoving=${
-      this.doneMoving
-    }, wasActiveInCurrentTurn=${this.wasActiveInCurrentTurn}]`;
+    }, savings=${this.savings}, doneMoving=${this.doneMoving}, wasActiveInCurrentTurn=${this.wasActiveInCurrentTurn}]`;
   }
 }

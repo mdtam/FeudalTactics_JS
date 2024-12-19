@@ -26,11 +26,7 @@ export class MainMenu extends Scene {
       .setOrigin(0.5)
       .setDepth(100);
 
-    this.menuContainer = this.add.container(
-      this.scale.width / 2,
-      this.scale.height / 2,
-      [this.logo, this.title]
-    );
+    this.menuContainer = this.add.container(this.scale.width / 2, this.scale.height / 2, [this.logo, this.title]);
     this.menuContainer.setSize(this.logo.width, this.logo.height * 2);
     this.setupCamera();
     this.scale.on('resize', this.setupCamera, this);
@@ -43,11 +39,7 @@ export class MainMenu extends Scene {
     // Center the container
     this.menuContainer.setPosition(width / 2, height / 2);
     // Calculate the appropriate scale to fit within the viewport
-    const scale =
-      Math.min(
-        width / this.menuContainer.width,
-        height / this.menuContainer.height
-      ) * 0.7;
+    const scale = Math.min(width / this.menuContainer.width, height / this.menuContainer.height) * 0.7;
     this.menuContainer.setScale(scale);
   }
 
