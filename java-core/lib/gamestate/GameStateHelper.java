@@ -138,42 +138,6 @@ public class GameStateHelper {
 		generateMap(gameState, players, landMass, density, vegetationDensity, random);
 	}
 
-	private static void sortPlayersByIncome(GameState gameState) {
-		gameState.getPlayers().sort((a, b) -> {
-			// if they are the same, it doesn't matter
-			int incomeA = gameState.getKingdoms().stream().filter(kingdom -> kingdom.getPlayer() == a)
-					.mapToInt(GameStateHelper::getKingdomIncome).sum();
-			int incomeB = gameState.getKingdoms().stream().filter(kingdom -> kingdom.getPlayer() == b)
-					.mapToInt(GameStateHelper::getKingdomIncome).sum();
-			return incomeA > incomeB ? 1 : -1;
-		});
-	}
-
-	private static void createCapitals(GameState gameState) {
-		for (Kingdom kingdom : gameState.getKingdoms()) {
-			createCapital(kingdom);
-		}
-	}
-
-	private static void createMoney(GameState gameState) {
-		for (Kingdom kingdom : gameState.getKingdoms()) {
-			int savings = Math.min(kingdom.getTiles().size() * 5, 20);
-			// players other than the first one will earn some money once their turn starts
-			if (gameState.getActivePlayer() != kingdom.getPlayer()) {
-				savings -= getKingdomIncome(kingdom);
-			}
-			kingdom.setSavings(savings);
-		}
-	}
-
-	private static void createTrees(GameState gameState, float vegetationDensity, Random random) {
-		for (HexTile tile : gameState.getMap().values()) {
-			if (random.nextFloat() <= vegetationDensity) {
-				spawnTree(gameState, tile);
-			}
-		}
-	}
-
 	/**
 	 * Creates a new capital in a kingdom after the old one was destroyed.
 	 * 
@@ -228,31 +192,6 @@ public class GameStateHelper {
 					LOGGER.debug("no suitable capital tile found after the old one was destroyed");
 					return;
 				}
-			}
-		}
-		newCapitalTile.setContent(new Capital());
-	}
-
-	/**
-	 * Creates a new capital in a kingdom that doesn't have one.
-	 * 
-	 * @param kingdom kingdom without capital
-	 */
-	private static void createCapital(Kingdom kingdom) {
-		HexTile newCapitalTile;
-		// try to find any empty kingdom tile
-		Optional<HexTile> emptyTileOptional = kingdom.getTiles().stream()
-				.filter((HexTile kingdomTile) -> kingdomTile.getContent() == null).findFirst();
-		if (emptyTileOptional.isPresent()) {
-			newCapitalTile = emptyTileOptional.get();
-		} else {
-			// no empty tile -> just select any
-			Optional<HexTile> newCapitalTileOptional = kingdom.getTiles().stream().findFirst();
-			if (newCapitalTileOptional.isPresent()) {
-				newCapitalTile = newCapitalTileOptional.get();
-			} else {
-				throw new AssertionError(
-						String.format("The kingdom %s has no tiles which a capital could be placed on.", kingdom));
 			}
 		}
 		newCapitalTile.setContent(new Capital());
