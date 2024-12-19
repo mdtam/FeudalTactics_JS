@@ -1,46 +1,46 @@
 {
-    "name": "feudal-tactics-js",
-    "description": "A Phaser 3 TypeScript project that replicates a Multiplayer Online playable version of the Feudat tactics Game.",
-    "version": "1.0.2",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/mdtam/FeudalTactics_JS.git"
-    },
-    "author": "Tamer @mdtam",
-    "license": "MIT",
-    "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-    "bugs": {
-        "url": "https://github.com/mdtam/FeudalTactics_JS/issues"
-    },
-    "homepage": "https://github.com/mdtam/FeudalTactics_JS#readme",
-    "keywords": [
-        "phaser",
-        "phaser3",
-        "react",
-        "vite",
-        "typescript"
-    ],
-    "scripts": {
-        "dev": "vite --config vite/config.dev.mjs",
-        "build": "vite build --config vite/config.prod.mjs"
-    },
-    "dependencies": {
-        "phaser": "^3.80.1",
-        "react": "^18.2.0",
-        "react-dom": "^18.2.0"
-    },
-    "devDependencies": {
-        "@types/react": "^18.2.55",
-        "@types/react-dom": "^18.2.19",
-        "@typescript-eslint/eslint-plugin": "^7.1.0",
-        "@typescript-eslint/parser": "^7.1.0",
-        "@vitejs/plugin-react": "^4.2.1",
-        "eslint": "^8.57.0",
-        "eslint-plugin-react-hooks": "^4.6.0",
-        "eslint-plugin-react-refresh": "^0.4.5",
-        "prettier": "^3.4.2",
-        "terser": "^5.28.1",
-        "typescript": "^5.3.3",
-        "vite": "^5.1.4"
-    }
+  "name": "feudal-tactics-js",
+  "description": "A Phaser 3 TypeScript project that replicates a Multiplayer Online playable version of the Feudat tactics Game.",
+  "version": "1.0.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdtam/FeudalTactics_JS.git"
+  },
+  "author": "Tamer @mdtam",
+  "license": "MIT",
+  "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+  "bugs": {
+    "url": "https://github.com/mdtam/FeudalTactics_JS/issues"
+  },
+  "homepage": "https://github.com/mdtam/FeudalTactics_JS#readme",
+  "keywords": [
+    "phaser",
+    "phaser3",
+    "react",
+    "vite",
+    "typescript"
+  ],
+  "scripts": {
+    "dev": "vite --config vite/config.dev.mjs",
+    "build": "vite build --config vite/config.prod.mjs"
+  },
+  "dependencies": {
+    "phaser": "^3.80.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "prettier": "^3.4.2",
+    "terser": "^5.28.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4"
+  }
 }

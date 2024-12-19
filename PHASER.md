@@ -21,10 +21,10 @@ This template has been updated for:
 
 ## Available Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm install` | Install project dependencies |
-| `npm run dev` | Launch a development web server |
+| Command         | Description                                    |
+| --------------- | ---------------------------------------------- |
+| `npm install`   | Install project dependencies                   |
+| `npm run dev`   | Launch a development web server                |
 | `npm run build` | Create a production build in the `dist` folder |
 
 ## Writing Code
@@ -68,7 +68,7 @@ EventBus.emit('event-name', data);
 // In Phaser
 // Listen for an event
 EventBus.on('event-name', (data) => {
-    // Do something with the data
+  // Do something with the data
 });
 ```
 
@@ -84,22 +84,18 @@ You can get the current Phaser Scene from the component event `"current-active-s
 
 **Important**: When you add a new Scene to your game, make sure you expose to React by emitting the `"current-scene-ready"` event via the `EventBus`, like this:
 
-
 ```ts
-class MyScene extends Phaser.Scene
-{
-    constructor ()
-    {
-        super('MyScene');
-    }
+class MyScene extends Phaser.Scene {
+  constructor() {
+    super('MyScene');
+  }
 
-    create ()
-    {
-        // Your Game Objects and logic here
+  create() {
+    // Your Game Objects and logic here
 
-        // At the end of create method:
-        EventBus.emit('current-scene-ready', this);
-    }
+    // At the end of create method:
+    EventBus.emit('current-scene-ready', this);
+  }
 }
 ```
 
@@ -119,7 +115,7 @@ const ReactComponent = () => {
     const phaserRef = useRef<IRefPhaserGame>(); // you can access to this ref from phaserRef.current
 
     const onCurrentActiveScene = (scene: Phaser.Scene) => {
-    
+
         // This is invoked
 
     }
@@ -146,21 +142,21 @@ Vite supports loading assets via JavaScript module `import` statements.
 This template provides support for both embedding assets and also loading them from a static folder. To embed an asset, you can import it at the top of the JavaScript file you are using it in:
 
 ```js
-import logoImg from './assets/logo.png'
+import logoImg from './assets/logo.png';
 ```
 
 To load static files such as audio files, videos, etc place them into the `public/assets` folder. Then you can use this path in the Loader calls within Phaser:
 
 ```js
-preload ()
+preload();
 {
-    //  This is an example of an imported bundled image.
-    //  Remember to import it at the top of this file
-    this.load.image('logo', logoImg);
+  //  This is an example of an imported bundled image.
+  //  Remember to import it at the top of this file
+  this.load.image('logo', logoImg);
 
-    //  This is an example of loading a static image
-    //  from the public/assets folder:
-    this.load.image('background', 'assets/bg.png');
+  //  This is an example of loading a static image
+  //  from the public/assets folder:
+  this.load.image('background', 'assets/bg.png');
 }
 ```
 
@@ -170,7 +166,7 @@ When you issue the `npm run build` command, all static assets are automatically 
 
 After you run the `npm run build` command, your code will be built into a single bundle and saved to the `dist` folder, along with any other assets your project imported, or stored in the public assets folder.
 
-In order to deploy your game, you will need to upload *all* of the contents of the `dist` folder to a public facing web server.
+In order to deploy your game, you will need to upload _all_ of the contents of the `dist` folder to a public facing web server.
 
 ## Customizing the Template
 
