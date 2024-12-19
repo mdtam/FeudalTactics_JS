@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 import { EventBus } from "../EventBus";
-import { GameMap } from "../utils/GameMap";
+import { GameMap } from "../lib/GameMap";
 
 export class Game extends Scene {
     controls: Phaser.Cameras.Controls.SmoothedKeyControl;

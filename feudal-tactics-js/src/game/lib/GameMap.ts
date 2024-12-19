@@ -222,19 +222,23 @@ export class GameMap {
     }
 
     sortPlayersByIncome() {
-        this.players.sort((a,b)=>{
-            const incomeA = this.kingdoms.filter(k=>k.getPlayer()==a).reduce((s,k)=> s+k.income, 0);
-            const incomeB = this.kingdoms.filter(k=>k.getPlayer()==b).reduce((s,k)=> s+k.income, 0);
+        this.players.sort((a, b) => {
+            const incomeA = this.kingdoms
+                .filter((k) => k.getPlayer() == a)
+                .reduce((s, k) => s + k.income, 0);
+            const incomeB = this.kingdoms
+                .filter((k) => k.getPlayer() == b)
+                .reduce((s, k) => s + k.income, 0);
 
             return incomeA - incomeB;
-        })
+        });
     }
 
     createMoney() {
         for (const kingdom of this.kingdoms) {
-            let savings = Math.min(kingdom.getTiles().length*5, 20);
-			// players other than the first one will earn some money once their turn starts
-            if (this.activePlayer != kingdom.getPlayer()){
+            let savings = Math.min(kingdom.getTiles().length * 5, 20);
+            // players other than the first one will earn some money once their turn starts
+            if (this.activePlayer != kingdom.getPlayer()) {
                 savings -= kingdom.income;
             }
             kingdom.setSavings(savings);
