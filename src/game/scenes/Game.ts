@@ -18,15 +18,15 @@ export class Game extends Scene {
     this.background = this.add.tileSprite(
       map.widthInPixels / 2,
       map.heightInPixels / 2,
-      map.widthInPixels,
-      map.heightInPixels,
+      map.widthInPixels * 2,
+      map.heightInPixels * 2,
       'water'
     );
     const tileset = map.addTilesetImage('tileset', 'tiles');
     map.createLayer('island', tileset!);
 
     // this.gameMap = new GameMap(map, 1715300692539, 50, -3);
-    this.gameMap = new GameMap(map, 0, 150, 3);
+    this.gameMap = new GameMap(map, 0, 150, -3);
     this.gameMap.GenerateMap();
 
     const cursors = this.input.keyboard!.createCursorKeys();
@@ -116,7 +116,12 @@ export class Game extends Scene {
     this.camera.centerOn(centerX, centerY);
     // Set camera zoom level
     this.camera.setZoom(zoom);
-    this.camera.setBounds(0, 0, this.gameMap.map.widthInPixels, this.gameMap.map.heightInPixels);
+    this.camera.setBounds(
+      -this.gameMap.map.widthInPixels / 3,
+      -this.gameMap.map.heightInPixels / 3,
+      (this.gameMap.map.widthInPixels * 5) / 3,
+      (this.gameMap.map.heightInPixels * 5) / 3
+    );
   }
 
   changeScene() {

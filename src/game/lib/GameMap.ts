@@ -94,7 +94,7 @@ export class GameMap {
           // tile and neighbor belong to different kingdoms --> merge kingdoms
           this.kingdoms.splice(
             this.kingdoms.findIndex((k) => k === neighborTile.getKingdom()),
-            1,
+            1
           );
           for (const neighborKingdomTile of neighborTile.getKingdom().getTiles()) {
             neighborKingdomTile.setKingdom(tile.getKingdom());
@@ -164,7 +164,7 @@ export class GameMap {
         usableCoords = this.getUnusedNeighborCoords(currentTilePos);
       }
       const scores = usableCoords.map((candidate) =>
-        Math.pow(this.getUnusedNeighborCoords(new HexTile(candidate)).length, this.density),
+        Math.pow(this.getUnusedNeighborCoords(new HexTile(candidate)).length, this.density)
       );
       const scoreSum = scores.reduce((sum, score) => sum + score, 0);
       const randomScore = this.rng.nextFloat() * scoreSum;
