@@ -15,7 +15,7 @@ export class GameMap {
   readonly rng: Random;
   kingdoms: Kingdom[] = [];
   border = { top: 20000, bottom: 0, left: 20000, right: 0 };
-
+  readonly vegitationDensity = 0.1;
   playerTurn: number;
 
   constructor(map: Phaser.Tilemaps.Tilemap, seed = 42, landMass = 42, density = 0, players?: Player[]) {
@@ -42,12 +42,24 @@ export class GameMap {
       this.generateTiles();
       this.createInitialKingdoms();
     } while (!this.doesEveryPlayerHaveKingdom());
-    this.createTrees(0.1);
+    this.createTrees(this.vegitationDensity);
     this.createCapitals();
     this.sortPlayersByIncome();
     this.createMoney();
 
-    // NEXT: fix the game state, setup architecture.
+    // NEXT:
+    // - FIX game make it run! :check:
+    // - Look up Game state storage. Global context out side of scenes
+    // - FIND A solution for GPU and MEMORY problems!
+    // - ONLY HAVE ONE MAP FOR THE ENTIRE GAME
+    // - DISCARD AI:
+    // - ONLY TWO OPTIONS: LOCAL AND ONLINE MULTIPLAYERS.
+    // - ONLINE MULTIPLAYER IS DELAYED FOR NOW.
+    // - IGNORE SETTINGS AND ANY OTHER PREFERENCES OR OPTIONS.
+    // - GET RESULTS NOW
+    // - 3 Inputs: seed - map size - density
+    // - FIND AN API FOR THE GAME MOVES.
+    //       fix the game state, setup architecture.
     //       Create Game Controller. EVENT BUS??
     //       PALM trees. CONQUERING tiles and etc
     //       Make it work multiplayer and online.
